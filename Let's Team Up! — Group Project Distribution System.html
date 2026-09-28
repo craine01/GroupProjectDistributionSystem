@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Let's Team Up!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --olive:#4A5D3E; --olive-dark:#3B4B32; --cream:#F7EFDA; --cream-2:#F1E6C8;
+  --ink:#2E3626; --line:rgba(255,255,255,.35);
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--cream);position:relative;overflow-x:hidden;box-shadow:0 0 40px rgba(0,0,0,.08)}
+@media(min-width:900px){
+  body{background:var(--cream-2)}
+  .app{max-width:1180px;box-shadow:none}
+  .nav{max-width:1180px;margin:0 auto;border-radius:0 0 14px 14px}
+  .hero{padding:40px 48px 52px}
+  .section-pad{padding:30px 48px}
+  #view-member .section-pad:nth-of-type(2),
+  #view-member .section-pad:nth-of-type(3){display:inline-block;vertical-align:top;width:calc(50% - 24px)}
+  #view-member .section-pad:nth-of-type(2){margin-right:48px}
+  #memberPills,#distPills{justify-content:flex-start}
+  #groupTaskCards{flex-wrap:wrap;overflow-x:visible}
+  #groupTaskCards .card{min-width:180px;flex:1 1 180px}
+  #myTasks{flex-direction:row;flex-wrap:wrap}
+  #myTasks .card{flex:1 1 220px}
+  .admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .modal-bg{align-items:center}
+  .modal{max-width:520px;border-radius:22px}
+}
+.hero{background:var(--olive);color:#fff;padding:32px 24px 44px;position:relative;overflow:hidden}
+.hero .rule{height:1px;background:var(--line);margin:14px 0}
+.hero-lines{position:absolute;right:-10px;top:20px;width:180px;height:150px;opacity:.9;pointer-events:none}
+.pill{border:1.5px solid var(--olive);border-radius:999px;padding:9px 18px;font-size:12.5px;font-weight:600;letter-spacing:.3px;color:var(--olive);background:transparent;cursor:pointer;text-align:center;transition:.15s}
+.pill.solid{background:var(--olive);color:#fff}
+.pill:hover{transform:translateY(-1px)}
+.pill:active{transform:translateY(0)}
+.card{background:transparent;border:2px solid var(--olive);border-radius:16px;padding:16px}
+.tag{display:inline-block;border-radius:999px;padding:3px 12px;font-size:10px;font-weight:700;letter-spacing:.4px}
+.tag-pending{background:#E8DCC0;color:#7A6A3E}
+.tag-progress{background:#DCE6D3;color:var(--olive-dark)}
+.tag-done{background:var(--olive);color:#fff}
+.section-pad{padding:26px 22px}
+.notch{height:26px;background:linear-gradient(var(--olive),var(--olive) 50%, transparent 50%);position:relative}
+.nav{display:flex;gap:8px;padding:10px 14px;background:var(--olive-dark);position:sticky;top:0;z-index:30}
+.nav button{flex:1;background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:7px 4px;font-size:11px;font-weight:600;cursor:pointer}
+.nav button.active{background:#fff;color:var(--olive-dark)}
+.view{display:none}
+.view.active{display:block}
+.modal-bg{position:fixed;inset:0;background:rgba(30,35,20,.55);display:none;align-items:flex-end;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:var(--cream);width:100%;max-width:480px;border-radius:22px 22px 0 0;padding:22px;max-height:88vh;overflow-y:auto;animation:up .2s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+input,select,textarea{width:100%;border:1.5px solid var(--olive);border-radius:12px;padding:11px 14px;font-family:'Inter';font-size:14px;background:#fff;color:var(--ink)}
+textarea{border-radius:14px;min-height:80px;resize:vertical}
+label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--olive-dark);display:block;margin:14px 0 5px}
+.btn{background:var(--olive);color:#fff;border:none;border-radius:999px;padding:12px;font-weight:700;font-size:14px;cursor:pointer;width:100%}
+.btn:hover{background:var(--olive-dark)}
+.btn-ghost{background:transparent;border:1.5px solid var(--olive);color:var(--olive)}
+.x{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;color:var(--olive);cursor:pointer}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--olive-dark);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;z-index:200;opacity:0;transition:.25s;pointer-events:none}
+.toast.show{opacity:1;bottom:30px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+::-webkit-scrollbar{width:0}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--cream-2)}
+th{color:var(--olive-dark);font-size:10.5px;text-transform:uppercase}
+.small-x{background:none;border:none;color:#a33;font-size:12px;cursor:pointer;font-weight:700}
+a.link{color:var(--olive-dark);word-break:break-all}
+.modal-footer{margin-top:20px;border-top:1px solid var(--cream-2);padding-top:14px}
+.task-card{cursor:pointer;transition:.15s}
+.task-card:hover{background:rgba(74,93,62,.06)}
+.task-card.locked{cursor:not-allowed;opacity:.55}
+.task-hint{font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;color:#8a8a70;margin-top:6px}
+.avatar-frame{width:64px;height:64px;border-radius:16px;background:var(--cream);color:var(--olive-dark);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display';font-weight:700;font-size:20px;border:2px solid #fff;overflow:hidden}
+.avatar-frame img{width:100%;height:100%;object-fit:cover}
+.cat-frame{width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,.15);border:2px dashed rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:26px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<div class="nav">
+  <button data-v="landing" class="active">Home</button>
+  <button data-v="member">Member</button>
+  <button data-v="admin">Admin</button>
+</div>
+
+<!-- LANDING -->
+<section class="view active" id="view-landing">
+  <div class="hero">
+    <h1 style="font-size:30px;line-height:1.1;font-weight:800;margin:0">LET'S<br>TEAM UP!</h1>
+    <div class="rule"></div>
+    <p style="font-size:12px;letter-spacing:1px;margin:10px 0 0;opacity:.9">YOUR GROUP PROJECT<br>DISTRIBUTION SYSTEM</p>
+  </div>
+  <div class="notch"></div>
+  <div class="section-pad">
+    <h2 style="font-size:19px;margin:0 0 4px">Join via code or create a group</h2>
+    <p style="font-size:12.5px;color:#5a604c;margin:0 0 16px">Using the code from your group admin, you can join a discussion. Or start your own and lead a project.</p>
+    <div class="row2">
+      <div>
+        <input id="joinCode" placeholder="Enter code" style="text-align:center;margin-bottom:8px">
+        <button class="pill solid" style="width:100%" onclick="joinGroup()">JOIN GROUP</button>
+      </div>
+      <button class="pill" style="height:fit-content;align-self:start;margin-top:0" onclick="openModal('createGroupModal')">CREATE GROUP</button>
+    </div>
+  </div>
+  <div class="section-pad" style="padding-top:0">
+    <h3 style="font-size:17px;margin:0 0 14px">System offers:</h3>
+    <div class="row2" style="gap:14px">
+      <div><div style="font-size:22px">◧</div><b style="font-size:13px">Zero-Barrier Access</b><p style="font-size:11.5px;color:#5a604c;margin:3px 0 0">No sign-in needed to join.</p></div>
+      <div><div style="font-size:22px">◎</div><b style="font-size:13px">Dual Interface</b><p style="font-size:11.5px;color:#5a604c;margin:3px 0 0">Be a member or a leader.</p></div>
+      <div><div style="font-size:22px">✎</div><b style="font-size:13px">Progress Tracking</b><p style="font-size:11.5px;color:#5a604c;margin:3px 0 0">Weekly update submissions.</p></div>
+      <div><div style="font-size:22px">◫</div><b style="font-size:13px">Task Distribution</b><p style="font-size:11.5px;color:#5a604c;margin:3px 0 0">Clear, visual assignment.</p></div>
+    </div>
+  </div>
+  <div class="hero" style="padding:26px 22px">
+    <h3 style="font-size:16px;margin:0 0 14px">Interested more?</h3>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div class="avatar-frame" style="border-radius:999px">KR</div>
+      <div class="cat-frame" title="Cat graphic">🐱</div>
+      <div>
+        <div class="serif" style="font-weight:700;font-size:15px">Kent Reyes</div>
+        <div style="font-size:10px;opacity:.85;letter-spacing:.5px">PROJECT CREATOR</div>
+        <div style="font-size:11px;margin-top:3px">→ kentreyes208@gmail.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBER -->
+<section class="view" id="view-member">
+  <div class="hero">
+    <h1 style="font-size:26px;font-weight:800;margin:0">TEAM<br>MEMBER</h1>
+    <div class="rule"></div>
+    <p style="font-size:12px;margin:8px 0 0">Welcome to your group journey!</p>
+    <h2 id="teamNameDisp" class="serif" style="font-size:20px;margin:16px 0 0;font-weight:700"></h2>
+  </div>
+  <div class="notch"></div>
+
+  <div class="section-pad" style="padding-bottom:6px">
+    <h3 style="font-size:16px;margin:0 0 12px">Group Members:</h3>
+    <div id="memberPills" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
+  </div>
+
+  <div class="section-pad">
+    <h3 style="font-size:16px;margin:0 0 12px">Group Dashboard:</h3>
+    <div class="row2">
+      <div class="card">
+        <b style="font-size:12px">GROUP DEADLINES</b>
+        <div id="deadlinesList" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+      <div class="card" style="cursor:pointer" onclick="openWeeklyModal()">
+        <b style="font-size:12px">WEEKLY UPDATE FORM</b>
+        <p style="font-size:11px;color:#5a604c;margin:8px 0 0">Tap to submit this week's progress + proof link.</p>
+        <div class="pill solid" style="margin-top:10px;font-size:11px">OPEN FORM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-pad">
+    <h3 style="font-size:16px;margin:0 0 12px">Group Task:</h3>
+    <p style="font-size:11px;color:#5a604c;text-transform:uppercase;letter-spacing:.5px;margin:0 0 10px">Our main goal</p>
+    <div id="groupTaskCards" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px"></div>
+  </div>
+
+  <div class="section-pad">
+    <h3 style="font-size:16px;margin:0 0 4px">My Task:</h3>
+    <p style="font-size:11px;color:#5a604c;text-transform:uppercase;letter-spacing:.5px;margin:0 0 10px">Your activities this week</p>
+    <label style="margin:0 0 8px">Logged in as</label>
+    <select id="memberSelect" onchange="renderMemberTasks()"></select>
+    <p style="font-size:10.5px;color:#8a8a70;margin:6px 0 0">You can only update the status of tasks assigned to you.</p>
+    <div id="myTasks" style="display:flex;flex-direction:column;gap:10px;margin-top:12px"></div>
+  </div>
+
+  <div class="hero section-pad">
+    <h3 style="font-size:16px;margin:0 0 14px;color:#fff">Group Distribution:</h3>
+    <p style="font-size:11px;text-align:center;margin:0 0 10px;opacity:.8">Click a member to see their tasks</p>
+    <div id="distPills" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section class="view" id="view-admin">
+  <div class="hero"><h1 style="font-size:26px;font-weight:800;margin:0">ADMIN<br>DASHBOARD</h1></div>
+  <div id="adminGate" class="section-pad">
+    <label>Creator PIN</label>
+    <input id="pinInput" type="password" placeholder="Enter PIN (demo: 1234)">
+    <button class="btn" style="margin-top:14px" onclick="checkPin()">Unlock</button>
+  </div>
+  <div id="adminPanel" class="section-pad" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <b style="font-size:12px">GROUP CODE</b>
+      <div id="adminCode" class="serif" style="font-size:22px;margin-top:4px"></div>
+    </div>
+    <p style="font-size:11px;color:#5a604c;margin:0 0 18px">Members mark their own tasks PENDING → IN PROGRESS → DONE. Use the audit log below to verify their commentary and proof links before treating a task as confirmed.</p>
+
+    <div class="admin-grid">
+    <div>
+      <h3 style="font-size:15px;margin-top:0">Members & Leaders</h3>
+      <div id="adminMembersList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"></div>
+      <div class="row2">
+        <input id="newMemberName" placeholder="Name">
+        <select id="newMemberRole"><option value="member">Member</option><option value="leader">Leader</option></select>
+      </div>
+      <button class="pill" style="margin-top:8px;width:100%" onclick="addMember()">+ Add Person</button>
+
+      <h3 style="font-size:15px;margin-top:22px">Deadlines</h3>
+      <div id="adminDeadlines" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"></div>
+      <div class="row2">
+        <input id="newDeadlineLabel" placeholder="Label">
+        <input id="newDeadlineDate" type="date">
+      </div>
+      <button class="pill" style="margin-top:8px;width:100%" onclick="addDeadline()">+ Add Deadline</button>
+
+      <h3 style="font-size:15px;margin-top:22px">Group Task (Main Goal)</h3>
+      <div id="adminGoals" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"></div>
+      <div class="row2">
+        <input id="newGoal" placeholder="Goal text">
+        <button class="pill" onclick="addGoal()">+ Add</button>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:15px;margin-top:0">Assign Task</h3>
+      <label>Assign to</label>
+      <select id="taskAssignee"></select>
+      <label>Task detail</label>
+      <input id="taskDetail" placeholder="e.g. Draft the intro slide">
+      <label>Starting status</label>
+      <select id="taskStatus"><option>PENDING</option><option>IN PROGRESS</option><option>DONE</option></select>
+      <button class="btn" style="margin-top:12px" onclick="addTask()">Assign Task</button>
+      <div id="adminTaskList" style="margin-top:14px;display:flex;flex-direction:column;gap:6px"></div>
+
+      <h3 style="font-size:15px;margin-top:22px">Weekly Update Log</h3>
+      <select id="logWeekFilter" onchange="renderLog()" style="margin-bottom:10px"></select>
+      <div style="overflow-x:auto"><table id="logTable"><thead><tr><th>Member</th><th>Week</th><th>Notes</th><th>Proof</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="createGroupModal"><div class="modal">
+  <button class="x" onclick="closeModal('createGroupModal')" aria-label="Close">✕</button>
+  <h3 class="serif" style="margin-top:0">Create your group</h3>
+  <label>Team name</label><input id="cgName" placeholder="e.g. Team Solstice">
+  <label>Your name (Leader 1)</label><input id="cgLeader" placeholder="Your name">
+  <button class="btn" style="margin-top:16px" onclick="createGroup()">Create & Get Code</button>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('createGroupModal')">Back / Close</button></div>
+</div></div>
+
+<div class="modal-bg" id="weeklyModal"><div class="modal">
+  <button class="x" onclick="closeModal('weeklyModal')" aria-label="Close">✕</button>
+  <h3 class="serif" style="margin-top:0">Weekly Update Form</h3>
+  <label>Your name</label><select id="wfName"></select>
+  <label>Week number</label><select id="wfWeek"><option>Week 1</option><option>Week 2</option><option>Week 3</option><option>Week 4</option><option>Week 5</option><option>Week 6</option></select>
+  <label>Commentary / accomplishments</label><textarea id="wfNotes" placeholder="What did you get done this week?"></textarea>
+  <label>Proof link</label><input id="wfLink" placeholder="Google Drive, Figma, Canva URL...">
+  <button class="btn" style="margin-top:16px" onclick="submitWeekly()">Submit Update</button>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('weeklyModal')">Back / Close</button></div>
+</div></div>
+
+<div class="modal-bg" id="memberTaskModal"><div class="modal">
+  <button class="x" onclick="closeModal('memberTaskModal')" aria-label="Close">✕</button>
+  <h3 class="serif" id="mtmName" style="margin-top:0"></h3>
+  <div id="mtmTasks" style="display:flex;flex-direction:column;gap:10px;margin-top:10px"></div>
+  <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('memberTaskModal')">Back / Close</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='teamup_state_v1';
+function defaultState(){return{
+  code:'DEMO123', groupName:'Team Solstice',
+  members:[{name:'Kent Reyes',role:'leader'},{name:'Alex Cruz',role:'leader'},{name:'Mia Santos',role:'member'},{name:'Jon Reyes',role:'member'},{name:'Ella Cruz',role:'member'}],
+  deadlines:[{label:'Draft submission',date:'2026-10-05'},{label:'Final presentation',date:'2026-10-20'}],
+  goals:['Finish research','Build prototype','Prep demo script','Submit final deck'],
+  tasks:[
+    {id:1,assignee:'Mia Santos',detail:'Compile survey results',status:'PENDING'},
+    {id:2,assignee:'Jon Reyes',detail:'Design the poster',status:'IN PROGRESS'},
+    {id:3,assignee:'Ella Cruz',detail:'Write the script',status:'DONE'},
+    {id:4,assignee:'Alex Cruz',detail:'Review budget sheet',status:'PENDING'}
+  ],
+  nextTaskId:5,
+  updates:[]
+};}
+const STATUS_FLOW=['PENDING','IN PROGRESS','DONE'];
+let state=load();
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));return s||defaultState();}catch(e){return defaultState();}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeAllModals(){document.querySelectorAll('.modal-bg.open').forEach(m=>m.classList.remove('open'));}
+document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAllModals();});
+
+// NAV
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+b.dataset.v).classList.add('active');
+  if(b.dataset.v==='member')renderMember();
+  if(b.dataset.v==='admin')renderAdmin();
+}));
+
+function joinGroup(){
+  const c=document.getElementById('joinCode').value.trim();
+  if(!c){toast('Enter a code first');return;}
+  if(c.toUpperCase()!==state.code.toUpperCase()){toast('Code not found — try DEMO123');return;}
+  toast('Joined '+state.groupName+'!');
+  document.querySelector('[data-v="member"]').click();
+}
+function createGroup(){
+  const name=document.getElementById('cgName').value.trim()||'My Team';
+  const leader=document.getElementById('cgLeader').value.trim()||'Leader 1';
+  state=defaultState();
+  state.groupName=name;
+  state.code='TM'+Math.floor(1000+Math.random()*9000);
+  state.members=[{name:leader,role:'leader'}];
+  state.tasks=[]; state.goals=[]; state.deadlines=[];
+  save();
+  closeModal('createGroupModal');
+  toast('Group created! Code: '+state.code);
+  document.querySelector('[data-v="admin"]').click();
+}
+
+// MEMBER VIEW
+function renderMember(){
+  document.getElementById('teamNameDisp').textContent=state.groupName;
+  document.getElementById('memberPills').innerHTML=state.members.map(m=>`<span class="pill">${m.role==='leader'?'★ ':''}${m.name}</span>`).join('');
+  document.getElementById('deadlinesList').innerHTML=state.deadlines.length?state.deadlines.map(d=>`<span class="pill" style="font-size:10.5px">${d.label} — ${d.date}</span>`).join(''):'<span style="font-size:11px;color:#8a8a70">No deadlines yet</span>';
+  document.getElementById('groupTaskCards').innerHTML=state.goals.length?state.goals.map(g=>`<div class="card" style="min-width:120px;flex:0 0 auto"><span style="font-size:11.5px">${g}</span></div>`).join(''):'<div class="card"><span style="font-size:11px">No goals set yet</span></div>';
+  const sel=document.getElementById('memberSelect');
+  sel.innerHTML=state.members.map(m=>`<option>${m.name}</option>`).join('');
+  renderMemberTasks();
+  document.getElementById('distPills').innerHTML=state.members.map(m=>`<span class="pill" style="background:#fff;border-color:#fff" onclick="showMemberTasks('${m.name.replace(/'/g,"\\'")}')">${m.name}</span>`).join('');
+  const wf=document.getElementById('wfName'); wf.innerHTML=state.members.map(m=>`<option>${m.name}</option>`).join('');
+}
+function taskCard(t,editable){
+  const cls=t.status==='PENDING'?'tag-pending':t.status==='IN PROGRESS'?'tag-progress':'tag-done';
+  if(editable){
+    return `<div class="card task-card" onclick="cycleStatus(${t.id})"><div style="font-size:12.5px;margin-bottom:8px">${t.detail}</div><span class="tag ${cls}">${t.status}</span><div class="task-hint">Tap to advance status</div></div>`;
+  }
+  return `<div class="card task-card locked"><div style="font-size:12.5px;margin-bottom:8px">${t.detail}</div><span class="tag ${cls}">${t.status}</span><div class="task-hint">🔒 Read-only</div></div>`;
+}
+function cycleStatus(id){
+  const t=state.tasks.find(x=>x.id===id);
+  if(!t)return;
+  const i=STATUS_FLOW.indexOf(t.status);
+  t.status=STATUS_FLOW[(i+1)%STATUS_FLOW.length];
+  save();renderMemberTasks();
+  toast('Marked "'+t.detail+'" as '+t.status);
+}
+function renderMemberTasks(){
+  const name=document.getElementById('memberSelect').value;
+  const t=state.tasks.filter(x=>x.assignee===name);
+  document.getElementById('myTasks').innerHTML=t.length?t.map(x=>taskCard(x,true)).join(''):'<div class="card"><span style="font-size:12px">No tasks assigned yet</span></div>';
+}
+function showMemberTasks(name){
+  document.getElementById('mtmName').textContent=name+"'s Tasks";
+  const currentUser=document.getElementById('memberSelect').value;
+  const t=state.tasks.filter(x=>x.assignee===name);
+  document.getElementById('mtmTasks').innerHTML=t.length?t.map(x=>taskCard(x,name===currentUser)).join(''):'<span style="font-size:12px">No tasks assigned.</span>';
+  openModal('memberTaskModal');
+}
+function openWeeklyModal(){renderMember();openModal('weeklyModal');}
+function submitWeekly(){
+  const name=document.getElementById('wfName').value, week=document.getElementById('wfWeek').value;
+  const notes=document.getElementById('wfNotes').value.trim(), link=document.getElementById('wfLink').value.trim();
+  if(!notes){toast('Add a short note first');return;}
+  state.updates.push({name,week,notes,link,ts:Date.now()});
+  save();
+  document.getElementById('wfNotes').value='';document.getElementById('wfLink').value='';
+  closeModal('weeklyModal');
+  toast('Weekly update submitted!');
+}
+
+// ADMIN VIEW
+function checkPin(){
+  if(document.getElementById('pinInput').value==='1234'){
+    document.getElementById('adminGate').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    renderAdmin();
+  }else toast('Wrong PIN — try 1234');
+}
+function renderAdmin(){
+  if(document.getElementById('adminPanel').style.display!=='block')return;
+  document.getElementById('adminCode').textContent=state.code;
+  document.getElementById('adminMembersList').innerHTML=state.members.map((m,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--olive);border-radius:10px;padding:6px 12px"><span style="font-size:12.5px">${m.role==='leader'?'★ ':''}${m.name}</span><button class="small-x" onclick="removeMember(${i})">Remove</button></div>`).join('')||'<span style="font-size:11px">No members yet</span>';
+  document.getElementById('adminDeadlines').innerHTML=state.deadlines.map((d,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--olive);border-radius:10px;padding:6px 12px"><span style="font-size:12.5px">${d.label} — ${d.date}</span><button class="small-x" onclick="removeDeadline(${i})">Remove</button></div>`).join('')||'<span style="font-size:11px">No deadlines yet</span>';
+  document.getElementById('taskAssignee').innerHTML=state.members.map(m=>`<option>${m.name}</option>`).join('');
+  document.getElementById('adminTaskList').innerHTML=state.tasks.map((t,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--olive);border-radius:10px;padding:6px 12px"><span style="font-size:12px">${t.assignee}: ${t.detail} <em style="opacity:.7">(${t.status})</em></span><button class="small-x" onclick="removeTask(${i})">Remove</button></div>`).join('')||'<span style="font-size:11px">No tasks yet</span>';
+  document.getElementById('adminGoals').innerHTML=state.goals.map((g,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--olive);border-radius:10px;padding:6px 12px"><span style="font-size:12.5px">${g}</span><button class="small-x" onclick="removeGoal(${i})">Remove</button></div>`).join('')||'<span style="font-size:11px">No goals yet</span>';
+  const weeks=['All',...new Set(state.updates.map(u=>u.week))];
+  document.getElementById('logWeekFilter').innerHTML=weeks.map(w=>`<option>${w}</option>`).join('');
+  renderLog();
+}
+function addMember(){
+  const name=document.getElementById('newMemberName').value.trim();
+  if(!name){toast('Enter a name');return;}
+  state.members.push({name,role:document.getElementById('newMemberRole').value});
+  document.getElementById('newMemberName').value='';
+  save();renderAdmin();toast('Person added');
+}
+function removeMember(i){state.members.splice(i,1);save();renderAdmin();}
+function addDeadline(){
+  const l=document.getElementById('newDeadlineLabel').value.trim(), d=document.getElementById('newDeadlineDate').value;
+  if(!l||!d){toast('Fill both fields');return;}
+  state.deadlines.push({label:l,date:d});save();renderAdmin();
+  document.getElementById('newDeadlineLabel').value='';document.getElementById('newDeadlineDate').value='';
+}
+function removeDeadline(i){state.deadlines.splice(i,1);save();renderAdmin();}
+function addTask(){
+  const detail=document.getElementById('taskDetail').value.trim();
+  if(!detail){toast('Add task detail');return;}
+  if(!state.nextTaskId)state.nextTaskId=(Math.max(0,...state.tasks.map(t=>t.id||0))+1);
+  state.tasks.push({id:state.nextTaskId++,assignee:document.getElementById('taskAssignee').value,detail,status:document.getElementById('taskStatus').value});
+  document.getElementById('taskDetail').value='';save();renderAdmin();toast('Task assigned');
+}
+function removeTask(i){state.tasks.splice(i,1);save();renderAdmin();}
+function addGoal(){
+  const g=document.getElementById('newGoal').value.trim();
+  if(!g){toast('Enter a goal');return;}
+  state.goals.push(g);document.getElementById('newGoal').value='';save();renderAdmin();
+}
+function removeGoal(i){state.goals.splice(i,1);save();renderAdmin();}
+function renderLog(){
+  const f=document.getElementById('logWeekFilter').value;
+  const rows=state.updates.filter(u=>!f||f==='All'||u.week===f);
+  document.querySelector('#logTable tbody').innerHTML=rows.length?rows.map(u=>`<tr><td>${u.name}</td><td>${u.week}</td><td>${u.notes}</td><td>${u.link?`<a class="link" href="${u.link}" target="_blank">link</a>`:'—'}</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;color:#8a8a70">No submissions yet</td></tr>';
+}
+
+renderMember();
+</script>
+</body>
+</html>
