@@ -46,25 +46,7 @@ All requests go to `api.php?action=<name>`. Data is sent/received as JSON.
 **Recommended hardening (roadmap)**
 
 - [ ] Issue a signed token/session on admin login and require it on every admin endpoint
-- [ ] Scope every `UPDATE`/`DELETE` to the current project (`project_id`) to prevent cross-project edits
-- [ ] Implement per-member PINs and a `join_member` endpoint
-- [ ] Add rate limiting / lockout for PIN attempts
-- [ ] Load DB credentials from environment variables or a git-ignored config file
-- [ ] Add security headers (CSP, `X-Content-Type-Options`) and disable `display_errors` in production
-- [ ] Serve over HTTPS
-
----
-
-## 🛠️ Tech Stack
-
-- HTML5, CSS3, Vanilla JavaScript
-- PHP 8 (PDO)
-- MySQL / MariaDB
-- Google Fonts (Playfair Display, Plus Jakarta Sans)
-
----
-
-## 🤝 Contributing
+- [ ] Scope every `UPDATE`/`DELETE` to th
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you'd like to change.
 
