@@ -1,34 +1,5 @@
 
 
-4. The admin unlocks **Admin Mode** with the Admin PIN, then adds deliverables, sub-tasks, deadlines and goals.
-5. Members **start** their tasks and **submit for verification**; the admin **approves or rejects**.
-6. Once all sub-tasks are approved, the admin **verifies the deliverable**.
-7. Members post **weekly progress logs** with a proof link.
-
----
-
-## 🔌 API Overview
-
-All requests go to `api.php?action=<name>`. Data is sent/received as JSON.
-
-| Action | Method | Purpose |
-|---|---|---|
-| `get_data` | GET | Load the whole project board |
-| `create_project` | POST | Create a new project |
-| `verify_admin` | POST | Check the Admin PIN |
-| `update_task_status` | POST | Change a sub-task's status |
-| `add_deliverable` / `edit_deliverable` / `delete_deliverable` | POST | Manage deliverables |
-| `verify_deliverable` | POST | Verify / unverify a deliverable |
-| `add_sub_task` / `edit_sub_task` / `delete_sub_task` | POST | Manage sub-tasks |
-| `add_member` / `remove_member` | POST | Manage members |
-| `add_deadline` | POST | Add a deadline |
-| `add_goal` / `remove_goal` | POST | Manage goals |
-| `submit_weekly` | POST | Submit a weekly progress log |
-
----
-
-## 🔒 Security Notes
-
 **What's already in place**
 
 - All SQL queries use **PDO prepared statements** (no string-concatenated SQL)
