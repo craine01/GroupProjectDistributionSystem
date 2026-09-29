@@ -1,24 +1,3 @@
-# 🫒 Let's Team Up! — Group Project Distribution System
-
-A lightweight web app for organizing group projects: create a team board, share a **Group Code**, assign sub-tasks under group deliverables, track progress, and let an admin verify finished work.
-
-Built with plain **HTML/CSS/JavaScript** (single-page frontend) and a small **PHP + MySQL** JSON API.
-
----
-
-## ✨ Features
-
-- **Create / join a project board** using a Group Code (no full account signup)
-- **Roles:** Leader and Member tags for each teammate
-- **Group Task Deliverables** with linked **sub-tasks** assigned per member
-- **Task workflow:** `PENDING → IN PROGRESS → UNDER REVIEW → DONE`
-- **Admin Mode** (PIN-protected) to add/edit/delete members, deadlines, goals, deliverables and tasks, and to approve/reject submissions
-- **Deliverable verification** — locked until every sub-task is approved
-- **Overall progress bar** computed from approved sub-tasks
-- **Weekly progress logs** with commentary and a proof link
-- Output escaping on the frontend to help prevent XSS
-
----
 
 ## 🗂️ Project Structure
 
