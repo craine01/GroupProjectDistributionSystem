@@ -1,26 +1,5 @@
 
 
-### 4. Run it
-
-Place the files in your web server directory (e.g. `htdocs/teamup/`) and open:
-
-```
-http://localhost/teamup/index.html
-```
-
-Or, for quick local testing with PHP's built-in server:
-
-```bash
-php -S localhost:8000
-```
-
----
-
-## 📖 How to Use
-
-1. **Create a project** on the Home tab: enter a title, a Group Code, and an Admin PIN.
-2. **Share the Group Code** with your teammates.
-3. Teammates **join** with the Group Code and their name.
 4. The admin unlocks **Admin Mode** with the Admin PIN, then adds deliverables, sub-tasks, deadlines and goals.
 5. Members **start** their tasks and **submit for verification**; the admin **approves or rejects**.
 6. Once all sub-tasks are approved, the admin **verifies the deliverable**.
