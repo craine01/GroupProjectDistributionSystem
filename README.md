@@ -1,44 +1,6 @@
 
 
 
-CREATE TABLE deadlines (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  project_id INT NOT NULL,
-  deadline_date VARCHAR(50) NOT NULL,
-  title VARCHAR(255) NOT NULL,
-  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-);
-
-CREATE TABLE goals (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  project_id INT NOT NULL,
-  title VARCHAR(255) NOT NULL,
-  description TEXT,
-  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-);
-
-CREATE TABLE group_deliverables (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  project_id INT NOT NULL,
-  title VARCHAR(255) NOT NULL,
-  is_verified TINYINT(1) NOT NULL DEFAULT 0,
-  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-);
-
-CREATE TABLE sub_tasks (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  deliverable_id INT NOT NULL,
-  assignee VARCHAR(100) NOT NULL,
-  title VARCHAR(255) NOT NULL,
-  status ENUM('PENDING','IN PROGRESS','UNDER REVIEW','DONE') NOT NULL DEFAULT 'PENDING',
-  FOREIGN KEY (deliverable_id) REFERENCES group_deliverables(id) ON DELETE CASCADE
-);
-
-CREATE TABLE weekly_logs (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  project_id INT NOT NULL,
-  member_name VARCHAR(100) NOT NULL,
-  week VARCHAR(50) NOT NULL,
   commentary TEXT,
   proof_link VARCHAR(500),
   FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
