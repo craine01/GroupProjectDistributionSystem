@@ -1,27 +1,5 @@
 
-Create a database named `group_project_db` and the tables below.
 
-> The schema is reconstructed from the queries in `api.php`. Adjust column types and constraints to match your own database if they differ.
-
-```sql
-CREATE DATABASE group_project_db CHARACTER SET utf8mb4;
-USE group_project_db;
-
-CREATE TABLE projects (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  project_code VARCHAR(50) NOT NULL UNIQUE,
-  title VARCHAR(255) NOT NULL,
-  admin_pin_hash VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE members (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  project_id INT NOT NULL,
-  name VARCHAR(100) NOT NULL,
-  role ENUM('Leader','Member') NOT NULL DEFAULT 'Member',
-  UNIQUE KEY uq_member (project_id, name),
-  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-);
 
 CREATE TABLE deadlines (
   id INT AUTO_INCREMENT PRIMARY KEY,
