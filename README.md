@@ -1,34 +1,4 @@
 
-## 🗂️ Project Structure
-
-```
-.
-├── index.html   # Frontend (UI + client-side logic)
-├── api.php      # Backend JSON API (PHP + PDO + MySQL)
-└── README.md
-```
-
----
-
-## 🧰 Requirements
-
-- PHP 8.0+ with the `pdo_mysql` extension
-- MySQL 5.7+ / MariaDB 10.3+
-- A web server (Apache, Nginx, or XAMPP/Laragon for local development)
-
----
-
-## 🚀 Setup
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
-```
-
-### 2. Create the database
-
 Create a database named `group_project_db` and the tables below.
 
 > The schema is reconstructed from the queries in `api.php`. Adjust column types and constraints to match your own database if they differ.
