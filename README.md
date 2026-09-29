@@ -1,23 +1,5 @@
 
 
-
-  commentary TEXT,
-  proof_link VARCHAR(500),
-  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
-);
-```
-
-### 3. Configure database credentials
-
-Do **not** commit real credentials. Create a dedicated MySQL user with limited privileges instead of using `root`:
-
-```sql
-CREATE USER 'teamup_app'@'localhost' IDENTIFIED BY 'a-strong-password';
-GRANT SELECT, INSERT, UPDATE, DELETE ON group_project_db.* TO 'teamup_app'@'localhost';
-```
-
-Then update the connection settings at the top of `api.php` (or, recommended, load them from environment variables / a `config.php` kept outside the web root and listed in `.gitignore`).
-
 ### 4. Run it
 
 Place the files in your web server directory (e.g. `htdocs/teamup/`) and open:
